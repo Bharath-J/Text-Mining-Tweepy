@@ -50,10 +50,39 @@ def word_in_text(word, text):
         return True
     return False
     
-tweets['hot'] = tweets['text'].apply(lambda tweet: word_in_text('hot',tweet))
+tweets['python'] = tweets['text'].apply(lambda tweet: word_in_text('python',tweet))
 tweets['javascript'] = tweets['text'].apply(lambda tweet: word_in_text('javascript',tweet))
 tweets['ruby'] = tweets['text'].apply(lambda tweet: word_in_text('ruby',tweet))
 
-print tweets['hot'].value_counts()[True]
-print tweets['javascript'].value_counts()[True]
-print tweets['ruby'].value_counts()[True]
+tweets['programming'] = tweets['text'].apply(lambda tweet: word_in_text('programming', tweet))
+tweets['tutorial'] = tweets['text'].apply(lambda tweet: word_in_text('tutorial', tweet))
+
+tweets['relevant'] = tweets['text'].apply(lambda tweet: word_in_text('programming', 
+                        tweet) or word_in_text('tutorial', tweet))
+
+print tweets['programming'].value_counts()[True]
+print tweets['tutorial'].value_counts()[True]
+print tweets['relevant'].value_counts()[True]
+
+print tweets[tweets['relevant']==True]['python'].value_counts()[True]
+print tweets[tweets['relevant']==True]['javascript'].value_counts()[True]
+print tweets[tweets['relevant']==True]['ruby'].value_counts()[True]
+
+
+
+#comparing number of tweets between python, javascript and ruby
+tweets_by_prg_lang = [tweets[tweets['relevant'] == True]['python'].value_counts()[True], 
+                      tweets[tweets['relevant'] == True]['javascript'].value_counts()[True], 
+                      tweets[tweets['relevant'] == True]['ruby'].value_counts()[True]]
+x_pos = list(range(len(prg_langs)))
+width = 0.8
+fig, ax = plt.subplots()
+plt.bar(x_pos, tweets_by_prg_lang, width,alpha=1,color='g')
+ax.set_ylabel('Number of tweets', fontsize=15)
+ax.set_title('Ranking: python vs. javascript vs. ruby (Relevant data)', fontsize=10, fontweight='bold')
+ax.set_xticks([p + 0.4 * width for p in x_pos])
+ax.set_xticklabels(prg_langs)
+plt.grid()
+
+
+
